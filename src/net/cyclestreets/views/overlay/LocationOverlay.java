@@ -2,13 +2,17 @@ package net.cyclestreets.views.overlay;
 
 import net.cyclestreets.R;
 
+import org.osmdroid.DefaultResourceProxyImpl;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.MyLocationOverlay;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,10 +31,57 @@ public class LocationOverlay extends MyLocationOverlay
 	
 	private final MapView mapView_;
 	
+  /** ResourceProxy for OSMdroid to replace the 'person' image with a picture of a bike. */
+  private static class CyclistProxy implements org.osmdroid.ResourceProxy
+  {
+  	DefaultResourceProxyImpl fallback;
+  	Context ctx_;
+		public CyclistProxy(Context pContext) {
+			fallback = new DefaultResourceProxyImpl(pContext);
+			ctx_ = pContext;
+		}
+
+		@Override
+		public Bitmap getBitmap(bitmap sym) {
+			if (sym == bitmap.person) {
+				Drawable d = ctx_.getResources().getDrawable(R.drawable.you_are_here);
+				BitmapDrawable bd = (BitmapDrawable) d;
+				assert(bd != null);
+				return bd.getBitmap();
+			}
+			return fallback.getBitmap(sym);
+		}
+
+		@Override
+		public float getDisplayMetricsDensity() {
+			return fallback.getDisplayMetricsDensity();
+		}
+
+		@Override
+		public Drawable getDrawable(bitmap sym) {
+			if (sym == bitmap.person) {
+				Drawable d = ctx_.getResources().getDrawable(R.drawable.you_are_here);
+				return d;
+			}
+			return fallback.getDrawable(sym);
+		}
+
+		@Override
+		public String getString(string arg0) {
+			return fallback.getString(arg0);
+		}
+
+		@Override
+		public String getString(string arg0, Object... arg1) {
+			return fallback.getString(arg0, arg1);
+		}
+
+  }
+  
 	public LocationOverlay(final Context context, 
 						             final MapView mapView) 
 	{
-		super(context, mapView);
+		super(context, mapView, new CyclistProxy(context));
 		
 		mapView_ = mapView;
 		
