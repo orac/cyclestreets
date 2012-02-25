@@ -1,27 +1,13 @@
 package net.cyclestreets;
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.webkit.WebView;
-import android.widget.TextView;
+import android.support.v4.app.FragmentActivity;
 
-public class AboutActivity extends Activity 
+public class AboutActivity extends FragmentActivity 
 {
-	@Override
-	protected void onCreate(Bundle savedInstanceState) 
+	public void onCreate(final Bundle b)
 	{
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.about);
-		
-    final WebView htmlView = (WebView)findViewById(R.id.html_view);
-    htmlView.loadUrl("file:///android_asset/credits.html");
-    
-    final TextView versionView = (TextView)findViewById(R.id.version_view);
-    versionView.setText(versionName());
-	} // onCreate
-	
-	private String versionName() 
-	{
-	  return ((CycleStreetsApp)getApplication()).version();
-	} // versionName
+		super.onCreate(b);
+		setContentView(R.layout.aboutactivity);
+	}
 } // HtmlActivity
